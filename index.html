@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malak - Anime Artist</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --white: #ffffff;
+            --black: #000000;
+            --gray-light: #f5f5f5;
+            --gray-medium: #8c8c8c;
+            --gray-dark: #333333;
+            --accent: #444444;
+        }
+
+        body {
+            background-color: var(--white);
+            color: var(--black);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Animated Background */
+        #art-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(45deg, var(--white) 0%, var(--gray-light) 100%);
+            overflow: hidden;
+        }
+
+        .bg-element {
+            position: absolute;
+            background-color: transparent;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+
+        .bg-line {
+            position: absolute;
+            background-color: transparent;
+            border-top: 1px dashed rgba(0, 0, 0, 0.1);
+            transform: rotate(45deg);
+            animation: move 20s infinite linear;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes move {
+            0% {
+                transform: rotate(45deg) translateX(-100px);
+            }
+            100% {
+                transform: rotate(45deg) translateX(100px);
+            }
+        }
+
+        /* Header */
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+            color: var(--black);
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--black);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--black);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 3px;
+        }
+
+        nav a:hover {
+            background-color: var(--gray-light);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--black);
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .hero h2 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: 1px;
+            color: var(--black);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            color: var(--gray-dark);
+        }
+
+        .highlight {
+            background-color: var(--gray-light);
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        /* Gallery Section */
+        .gallery-section {
+            padding: 4rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            color: var(--black);
+            position: relative;
+        }
+
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 2px;
+            background-color: var(--black);
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .artwork {
+            background-color: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--gray-light);
+        }
+
+        .artwork:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .artwork-img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .artwork-info {
+            padding: 1.5rem;
+        }
+
+        .artwork-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--black);
+        }
+
+        .artwork-desc {
+            color: var(--gray-dark);
+            font-size: 0.95rem;
+        }
+
+        /* About Section */
+        .about-section {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .about-content {
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+        }
+
+        .about-text {
+            flex: 1;
+        }
+
+        .about-text h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--black);
+        }
+
+        .about-text p {
+            margin-bottom: 1.5rem;
+            color: var(--gray-dark);
+        }
+
+        .about-image {
+            flex: 1;
+            text-align: center;
+        }
+
+        .artist-img {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Contact Section */
+        .contact-section {
+            padding: 4rem 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .contact-form {
+            background-color: var(--gray-light);
+            padding: 2.5rem;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--black);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--gray-medium);
+            border-radius: 4px;
+            background-color: var(--white);
+            color: var(--black);
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background-color: var(--black);
+            color: var(--white);
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-weight: 500;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--gray-dark);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--black);
+            color: var(--white);
+            padding: 3rem 2rem 1.5rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-links a {
+            color: var(--white);
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--gray-light);
+        }
+
+        .copyright {
+            color: var(--gray-medium);
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            border-top: 1px solid var(--gray-dark);
+            padding-top: 1.5rem;
+            width: 100%;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .about-content {
+                flex-direction: column;
+                gap: 2rem;
+            }
+            
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                gap: 1rem;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                position: absolute;
+                top: 1.5rem;
+                right: 2rem;
+            }
+            
+            .nav-menu {
+                display: none;
+                width: 100%;
+                margin-top: 1rem;
+            }
+            
+            .nav-menu.active {
+                display: block;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero, .gallery-section, .about-section, .contact-section {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .contact-form {
+                padding: 1.5rem;
+            }
+            
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div id="art-background"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-paint-brush"></i>
+                <h1>MALAK</h1>
+            </div>
+            
+            <button class="mobile-menu-btn" id="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <nav class="nav-menu" id="nav-menu">
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#gallery">Gallery</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <h2>Anime Art by Malak</h2>
+        <p>Welcome to the artistic world of <span class="highlight">Malak</span>, a talented artist specializing in beautiful anime drawings. Each piece tells a unique story through delicate lines and expressive characters, all captured in monochrome elegance.</p>
+        <p>Explore the gallery to see her stunning collection of pencil drawings that bring anime characters to life with emotion and detail.</p>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery-section" id="gallery">
+        <h2 class="section-title">Art Gallery</h2>
+        <div class="gallery">
+            <div class="artwork">
+                <img src="1.jpg" alt="Anime Character Drawing" class="artwork-img">
+                <div class="artwork-info">
+                    <h3 class="artwork-title">Ethereal Guardian</h3>
+                    <p class="artwork-desc">A mystical anime character with intricate details, drawn with pencil on textured paper. The delicate shading creates a sense of depth and emotion.</p>
+                </div>
+            </div>
+            
+            <div class="artwork">
+                <img src="2.jpg" alt="Anime Portrait" class="artwork-img">
+                <div class="artwork-info">
+                    <h3 class="artwork-title">Whispering Shadows</h3>
+                    <p class="artwork-desc">Portrait of a thoughtful anime character, showcasing Malak's skill in capturing facial expressions and emotional depth through pencil strokes.</p>
+                </div>
+            </div>
+            
+            <div class="artwork">
+                <img src="3.jpg" alt="Anime Scene" class="artwork-img">
+                <div class="artwork-info">
+                    <h3 class="artwork-title">Moonlit Serenade</h3>
+                    <p class="artwork-desc">A complete anime scene with background elements, demonstrating Malak's ability to create atmospheric compositions with pencil alone.</p>
+                </div>
+            </div>
+            
+            <div class="artwork">
+                <img src="4.jpg" alt="Character Design" class="artwork-img">
+                <div class="artwork-info">
+                    <h3 class="artwork-title">Dream Weaver</h3>
+                    <p class="artwork-desc">Original character design with elaborate costume details, showing Malak's creativity in anime character development.</p>
+                </div>
+            </div>
+            
+            <div class="artwork">
+                <img src="5.jpg" alt="Anime Fantasy" class="artwork-img">
+                <div class="artwork-info">
+                    <h3 class="artwork-title">Fantasy Realm</h3>
+                    <p class="artwork-desc">Fantasy anime character in an imaginative setting, highlighting Malak's talent for creating otherworldly scenes with pencil shading techniques.</p>
+                </div>
+            </div>
+            
+            <div class="artwork">
+                <img src="5.jpg" alt="Emotional Portrait" class="artwork-img">
+                <div class="artwork-info">
+                    <h3 class="artwork-title">Silent Emotions</h3>
+                    <p class="artwork-desc">An emotionally charged portrait that captures subtle expressions, showcasing Malak's understanding of human emotions in anime style.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section" id="about">
+        <h2 class="section-title">About The Artist</h2>
+        <div class="about-content">
+            <div class="about-text">
+                <h3>Malak: The Artist Behind The Pencil</h3>
+                <p>Malak is a passionate anime artist who specializes in creating stunning monochrome drawings. With over 5 years of experience, she has developed a unique style that combines traditional pencil techniques with modern anime aesthetics.</p>
+                <p>Her artwork focuses on emotional expression, intricate details, and capturing the essence of characters through careful shading and line work. Each piece is created with dedication, often taking 20-40 hours to complete.</p>
+                <p>Malak believes that black and white drawings have a unique power to convey emotions without the distraction of color, allowing viewers to focus on the composition, expression, and story within each piece.</p>
+                <p>She draws inspiration from both classic and contemporary anime, as well as from everyday emotions and experiences that she transforms into captivating visual stories.</p>
+            </div>
+            <div class="about-image">
+                <img src="img.jpg" alt="Artist at work" class="artist-img">
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="social-links">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-artstation"></i></a>
+                <a href="#"><i class="fab fa-pinterest"></i></a>
+            </div>
+            
+            <p>© 2026 Malak Anime Art. All rights reserved.</p>
+            <p class="copyright">All artworks displayed on this website are original creations by Malak.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Create animated background elements
+        document.addEventListener('DOMContentLoaded', function() {
+            const background = document.getElementById('art-background');
+            
+            // Create floating circles
+            for (let i = 0; i < 15; i++) {
+                const circle = document.createElement('div');
+                circle.classList.add('bg-element');
+                circle.style.width = Math.random() * 100 + 50 + 'px';
+                circle.style.height = circle.style.width;
+                circle.style.left = Math.random() * 100 + 'vw';
+                circle.style.top = Math.random() * 100 + 'vh';
+                circle.style.animationDuration = (Math.random() * 20 + 10) + 's';
+                circle.style.animationDelay = Math.random() * 5 + 's';
+                background.appendChild(circle);
+            }
+            
+            // Create moving lines
+            for (let i = 0; i < 10; i++) {
+                const line = document.createElement('div');
+                line.classList.add('bg-line');
+                line.style.width = Math.random() * 300 + 100 + 'px';
+                line.style.height = '1px';
+                line.style.left = Math.random() * 100 + 'vw';
+                line.style.top = Math.random() * 100 + 'vh';
+                line.style.animationDuration = (Math.random() * 25 + 15) + 's';
+                line.style.animationDelay = Math.random() * 10 + 's';
+                background.appendChild(line);
+            }
+            
+            // Mobile menu toggle
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const navMenu = document.getElementById('nav-menu');
+            
+            mobileMenuBtn.addEventListener('click', function() {
+                navMenu.classList.toggle('active');
+                
+                // Change icon
+                const icon = mobileMenuBtn.querySelector('i');
+                if (navMenu.classList.contains('active')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
+            
+            // Form submission
+            const contactForm = document.getElementById('contactForm');
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Thank you for your message! Malak will get back to you soon.');
+                contactForm.reset();
+            });
+            
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('nav a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    
+                    window.scrollTo({
+                        top: targetSection.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    if (navMenu.classList.contains('active')) {
+                        navMenu.classList.remove('active');
+                        const icon = mobileMenuBtn.querySelector('i');
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
